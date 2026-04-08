@@ -13,10 +13,9 @@
 # limitations under the License.
 """DPM-Solver++ 2S sampler from https://arxiv.org/abs/2211.01095."""
 
-from tempfile import template
 from typing import Optional
 
-from graphcast import casting, xarray_tree
+from graphcast import casting
 from graphcast import denoisers_base
 from graphcast import samplers_base as base
 from graphcast import samplers_utils as utils
@@ -125,6 +124,7 @@ class Sampler(base.Sampler):
       """
       def init_noise(template):
         return noise_levels[0] * utils.spherical_white_noise_like(template)
+
       # Initialise the inputs if i == 0.
       # This is done here to ensure both noise sampler calls can use the same
       # spherical harmonic basis functions. While there may be a small compute
