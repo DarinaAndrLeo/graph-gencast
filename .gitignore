@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.nc
+*.npz
+*.zarr
+*.h5
+*.pkl
+*.npz
+*.npy
+*.ckpt
+*.pt
+*.pth
+*.err
+*.out
+test_gencast_demo_cloud_vm.ipynb
