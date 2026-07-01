@@ -12,4 +12,6 @@ __pycache__/
 *.pth
 *.err
 *.out
+*.grib*
+*.DS_Store
 test_gencast_demo_cloud_vm.ipynb
