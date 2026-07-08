@@ -10,7 +10,7 @@ ENSEMBLES=${3}
 
 START_PLUS12=$(date -d "$START +12 hours" '+%Y-%m-%dT%H:%M:%S')
 START_PLUS12_SHORT=${START_PLUS12%:00:00}
-DATA="init_files/#init_${START_PLUS12_SHORT}_${DAYS}d.nc"
+DATA="init_files/init_${START_PLUS12_SHORT}_${DAYS}d.nc"
 
 prep_jobid=$(sbatch --parsable fetch_init.sh "$START" "$DAYS")
 echo "Submitted prep job: $prep_jobid"

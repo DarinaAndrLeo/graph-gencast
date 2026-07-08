@@ -17,6 +17,9 @@ START=${1}
 DAYS=${2}
 ENSEMBLES=${3}
 SEED=${4}
+DATA=${5:-}
+DELTA_KIND=${6:-}
+
 START_SHORT=${START%:00:00}
 START_PLUS12=$(python -c "
 from datetime import datetime, timedelta
@@ -24,10 +27,23 @@ print((datetime.fromisoformat('$START') + timedelta(hours=12)).strftime('%Y-%m-%
 ")
 START_PLUS12_SHORT=${START_PLUS12%:00:00}
 
+
+if [[ -n "$DELTA_KIND" ]]; then
+    DELTA_SUFFIX="${DELTA_KIND}_"
+else
+    DELTA_SUFFIX=""
+fi
+
+if [[ -n "$DATA" ]]; then
+    DATA_PATH="$DATA"
+else 
+    DATA_PATH="init_files/init_${START_SHORT}_${DAYS}d.nc"
+fi
+
 python run_gencast.py \
   --model "gencast_params_GenCast 1p0deg _2019.npz" \
-  --data "init_files/init_${START_SHORT}_${DAYS}d.nc" \
-  --output "/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/predictions/init_${START_PLUS12_SHORT}_${DAYS}d_${ENSEMBLES}ens_${SEED}seed_predictions.zarr" \
+  --data "$DATA_PATH" \
+  --output "/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/predictions/1x1_${DELTA_SUFFIX}init_${START_PLUS12_SHORT}_${DAYS}d_${ENSEMBLES}ens_${SEED}seed_predictions.zarr" \
   --ensemble-size "$ENSEMBLES" \
   --seed "$SEED"
 
