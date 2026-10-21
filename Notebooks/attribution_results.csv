@@ -1,0 +1,49 @@
+Lead,Model,Metric,17%,50%,83%
+3 day lead,IFS,Impact PI → Current (°C),0.205,0.239,0.273
+3 day lead,IFS,Impact PI → Future (°C),0.479,0.516,0.558
+3 day lead,IFS,Scaled impact (°C),1.252,1.35,1.459
+3 day lead,IFS,RR Current / PI,1.634,2.222,3.905
+3 day lead,IFS,RR Future / PI,3.058,5.719,17.428
+3 day lead,IFS,RR scaled,18.578,95.48,1758.209
+3 day lead,GenCast,Impact PI → Current (°C),0.145,0.153,0.161
+3 day lead,GenCast,Impact PI → Future (°C),0.242,0.256,0.271
+3 day lead,GenCast,Scaled impact (°C),0.758,0.802,0.848
+3 day lead,GenCast,RR Current / PI,1.344,1.526,1.814
+3 day lead,GenCast,RR Future / PI,1.644,2.04,2.688
+3 day lead,GenCast,RR scaled,4.734,9.304,22.063
+7 day lead,IFS,Impact PI → Current (°C),0.236,0.462,0.671
+7 day lead,IFS,Impact PI → Future (°C),0.322,0.558,0.789
+7 day lead,IFS,Scaled impact (°C),0.495,0.858,1.213
+7 day lead,IFS,RR Current / PI,1.402,2.206,3.89
+7 day lead,IFS,RR Future / PI,1.655,2.606,4.571
+7 day lead,IFS,RR scaled,2.17,4.365,10.36
+7 day lead,GenCast,Impact PI → Current (°C),0.566,0.676,0.764
+7 day lead,GenCast,Impact PI → Future (°C),0.791,0.913,1.005
+7 day lead,GenCast,Scaled impact (°C),1.452,1.675,1.845
+7 day lead,GenCast,RR Current / PI,2.549,4.769,13.36
+7 day lead,GenCast,RR Future / PI,3.577,7.788,32.624
+7 day lead,GenCast,RR scaled,10.374,43.254,599.617
+11 day lead,IFS,Impact PI → Current (°C),1.034,1.376,1.728
+11 day lead,IFS,Impact PI → Future (°C),0.947,1.635,2.18
+11 day lead,IFS,Scaled impact (°C),1.184,2.043,2.725
+11 day lead,IFS,RR Current / PI,2.651,4.337,9.452
+11 day lead,IFS,RR Future / PI,2.65,5.403,15.422
+11 day lead,IFS,RR scaled,3.382,8.238,30.562
+11 day lead,GenCast,Impact PI → Current (°C),0.098,0.723,1.337
+11 day lead,GenCast,Impact PI → Future (°C),0.126,0.62,1.075
+11 day lead,GenCast,Scaled impact (°C),0.189,0.935,1.62
+11 day lead,GenCast,RR Current / PI,1.049,1.485,2.245
+11 day lead,GenCast,RR Future / PI,1.067,1.405,1.907
+11 day lead,GenCast,RR scaled,1.103,1.669,2.647
+Pooled,IFS,Impact PI → Current (°C),0.226,0.46,1.367
+Pooled,IFS,Impact PI → Future (°C),0.467,0.573,1.62
+Pooled,IFS,Scaled impact (°C),0.784,1.323,2.027
+Pooled,IFS,RR Current / PI,1.662,2.738,5.775
+Pooled,IFS,RR Future / PI,2.155,4.093,12.006
+Pooled,IFS,RR scaled,3.179,10.847,126.385
+Pooled,GenCast,Impact PI → Current (°C),0.149,0.533,0.817
+Pooled,GenCast,Impact PI → Future (°C),0.247,0.599,0.969
+Pooled,GenCast,Scaled impact (°C),0.749,0.935,1.733
+Pooled,GenCast,RR Current / PI,1.319,1.77,4.779
+Pooled,GenCast,RR Future / PI,1.392,2.132,7.644
+Pooled,GenCast,RR scaled,1.678,7.794,57.802
