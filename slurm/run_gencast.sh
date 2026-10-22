@@ -38,7 +38,7 @@ mkdir -p "$OUT_DIR"
 python scripts/run_gencast.py \
   --model "data/params/gencast_params_GenCast 1p0deg _2019.npz" \
   --data "$DATA_PATH" \
-  --output "$OUT_DIR/seed${SEED}_${ENSEMBLES}ens.zarr" \
+  --output "$OUT_DIR/pred_1deg_${STATE}_init-${INIT_SHORT}_${DAYS}d_seed${SEED}_${ENSEMBLES}ens.zarr" \
   --ensemble-size "$ENSEMBLES" \
   --seed "$SEED"
 
