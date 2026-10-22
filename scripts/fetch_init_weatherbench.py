@@ -3,6 +3,7 @@
 import math
 from pathlib import Path
 import argparse
+import subprocess
 import numpy as np
 import xarray as xr
 from datetime import datetime, timedelta
@@ -261,14 +262,25 @@ for static_name in ("land_sea_mask", "geopotential_at_surface"):
 # FINAL CHECK + SAVE
 # -------------------------------------------------------------
 #ds = ds.load()
+def _git_commit():
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=Path(__file__).resolve().parent, stderr=subprocess.DEVNULL, text=True).strip()
+    except Exception:
+        return "unknown"
+
+# forecast_init_time is the LATEST of the two input frames (the other is init - 12h; GenCast always takes 2 frames)
 ds.attrs.update({
+    "title": f"GenCast 1deg initial conditions, current, forecast init {init_dt.isoformat()}",
     "state": "current",
-    "forecast_init_time": init_dt.isoformat(),
-    "first_input_time": start_dt.isoformat(),
-    "n_input_frames": 2,
-    "forecast_days": args.forecast_days,
     "resolution_deg": 1.0,
-    "source": "ERA5 via WeatherBench2 (" + PATH + ")",
+    "forecast_init_time": init_dt.isoformat(),
+    "forecast_days": args.forecast_days,
+    "source": "ERA5 via WeatherBench2: " + PATH,
+    "sst_perturbation": "none",
+    "created": datetime.now().astimezone().isoformat(timespec="seconds"),
+    "created_by": f"scripts/fetch_init_weatherbench.py @ {_git_commit()}",
 })
 ds.to_netcdf(OUTPUT_FILE, format="NETCDF4")
 print(f"Saved to {OUTPUT_FILE}")

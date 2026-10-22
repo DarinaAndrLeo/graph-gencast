@@ -4,6 +4,16 @@ import numpy as np
 import tempfile
 import subprocess
 import argparse
+import hashlib
+from datetime import datetime
+
+def _git_commit():
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=Path(__file__).resolve().parent, stderr=subprocess.DEVNULL, text=True).strip()
+    except Exception:
+        return "unknown"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--init-file", required=True, help="Initialisation NetCDF file")
@@ -135,11 +145,17 @@ def remap_grib_and_apply_to_sst(
         out_ds[target_var] = init_ds[target_var] + delta_da
 
         # the file was copied from the current-climate init file, so overwrite its state metadata
+        state = "incr" if args.pi_or_incr == 1 else "pi"
+        init_time = out_ds.attrs.get("forecast_init_time", "unknown")
         out_ds.attrs.update({
-            "state": "incr" if args.pi_or_incr == 1 else "pi",
+            "title": f"GenCast 1deg initial conditions, {state}, forecast init {init_time}",
+            "state": state,
             "sst_perturbation": "+delta" if args.pi_or_incr == 1 else "-delta",
             "sst_delta_file": grib_path.name,
+            "sst_delta_sha256": hashlib.sha256(grib_path.read_bytes()).hexdigest(),
             "derived_from": init_nc_path.name,
+            "created": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "created_by": f"scripts/sst_delta_apply.py @ {_git_commit()}",
         })
 
         out_ds.to_netcdf(out_nc_path)
