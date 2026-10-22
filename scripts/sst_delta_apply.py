@@ -5,7 +5,11 @@ import tempfile
 import subprocess
 import argparse
 import hashlib
+import os
 from datetime import datetime
+
+# Root of the data store (contains IC_Deltas/, gencast/, ifs/). Override with the DATA_ROOT environment variable.
+DATA_ROOT = os.environ.get("DATA_ROOT", "/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/AI-IFS-attributioncomparison/pnw2021")
 
 def _git_commit():
     try:
@@ -22,9 +26,9 @@ parser.add_argument("--output-file", required=True, help="NetCDF output file")
 args = parser.parse_args()
 
 if args.pi_or_incr == 1:
-    grib_path = "data/IC_Deltas/incr-co2-sstdelta-remap.grib"
+    grib_path = f"{DATA_ROOT}/IC_Deltas/incr-co2-sstdelta-remap.grib"
 elif args.pi_or_incr == -1:
-    grib_path = "data/IC_Deltas/pi-co2-sstdelta-remap.grib"
+    grib_path = f"{DATA_ROOT}/IC_Deltas/pi-co2-sstdelta-remap.grib"
 else:
     raise ValueError("pi_or_incr must be -1 or 1")
 
