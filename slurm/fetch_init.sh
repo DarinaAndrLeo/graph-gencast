@@ -9,15 +9,20 @@
 source ~/.bashrc
 conda activate gencast
 
-START=${1}
-DAYS=${2}
-START_SHORT=${START%:00:00}
-#start in format 2021-06-17T00:00:00
+DATA_ROOT=${DATA_ROOT:-/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/AI-IFS-attributioncomparison/pnw2021}
+
+# INIT = forecast initialisation time = the LATEST input frame (the other input frame is init - 12h)
+INIT=${1}      # e.g. 2021-06-26T00:00:00
+DAYS=${2}      # forecast days after INIT
+INIT_SHORT=${INIT%:00:00}
+
+OUT_DIR="$DATA_ROOT/gencast/init/current"
+mkdir -p "$OUT_DIR"
 
 python scripts/fetch_init_weatherbench.py \
-    --start "${START}" \
+    --init-time "${INIT}" \
     --forecast-days "${DAYS}" \
-    --output-file "init_files/init_${START_SHORT}_${DAYS}d.nc"
+    --output-file "$OUT_DIR/ic_1deg_current_init-${INIT_SHORT}_${DAYS}d.nc"
 
-#submit with:
-#sbatch slurm/fetch_init.sh 2021-06-25T00:00:00 30
+#submit (from repo root) with:
+#sbatch slurm/fetch_init.sh 2021-06-26T00:00:00 10

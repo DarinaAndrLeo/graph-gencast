@@ -13,39 +13,34 @@ set -euo pipefail
 source ~/.bashrc
 conda activate gencast
 
-START=${1}
-DAYS=${2}
+DATA_ROOT=${DATA_ROOT:-/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/AI-IFS-attributioncomparison/pnw2021}
+
+# INIT = forecast initialisation time = the LATEST input frame (the other input frame is init - 12h)
+INIT=${1}          # e.g. 2021-06-26T00:00:00
+DAYS=${2}          # forecast days after INIT
 ENSEMBLES=${3}
 SEED=${4}
-DATA=${5:-}
-DELTA_KIND=${6:-}
+DATA=${5:-}        # optional: explicit init file (used for perturbed runs)
+DELTA_KIND=${6:-}  # optional: pi | incr (empty = current climate)
 
-START_SHORT=${START%:00:00}
-START_PLUS12=$(python -c "
-from datetime import datetime, timedelta
-print((datetime.fromisoformat('$START') + timedelta(hours=12)).strftime('%Y-%m-%dT%H:%M:%S'))
-")
-START_PLUS12_SHORT=${START_PLUS12%:00:00}
-
-
-if [[ -n "$DELTA_KIND" ]]; then
-    DELTA_SUFFIX="${DELTA_KIND}_"
-else
-    DELTA_SUFFIX=""
-fi
+INIT_SHORT=${INIT%:00:00}
+STATE=${DELTA_KIND:-current}
 
 if [[ -n "$DATA" ]]; then
     DATA_PATH="$DATA"
-else 
-    DATA_PATH="init_files/init_${START_SHORT}_${DAYS}d.nc"
+else
+    DATA_PATH="$DATA_ROOT/gencast/init/current/ic_1deg_current_init-${INIT_SHORT}_${DAYS}d.nc"
 fi
+
+OUT_DIR="$DATA_ROOT/gencast/predictions/1deg/$STATE/init-${INIT_SHORT}_${DAYS}d"
+mkdir -p "$OUT_DIR"
 
 python scripts/run_gencast.py \
   --model "data/params/gencast_params_GenCast 1p0deg _2019.npz" \
   --data "$DATA_PATH" \
-  --output "/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/predictions/1x1_${DELTA_SUFFIX}init_${START_PLUS12_SHORT}_${DAYS}d_${ENSEMBLES}ens_${SEED}seed_predictions.zarr" \
+  --output "$OUT_DIR/seed${SEED}_${ENSEMBLES}ens.zarr" \
   --ensemble-size "$ENSEMBLES" \
   --seed "$SEED"
 
-#submit with:
-#sbatch slurm/run_gencast.sh 2021-06-17T12:00:00 30 8 0
+#submit (from repo root) with:
+#sbatch slurm/run_gencast.sh 2021-06-26T00:00:00 10 26 0

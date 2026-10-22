@@ -4,19 +4,17 @@
 #SBATCH --job-name=gencast
 set -euo pipefail
 
-START=${1}
-DAYS=${2}
+# INIT = forecast initialisation time = the LATEST input frame (the other input frame is init - 12h)
+INIT=${1}          # e.g. 2021-06-26T00:00:00
+DAYS=${2}          # forecast days after INIT
 ENSEMBLES=${3}
+SEED=${4}
 
-START_PLUS12=$(date -d "$START +12 hours" '+%Y-%m-%dT%H:%M:%S')
-START_PLUS12_SHORT=${START_PLUS12%:00:00}
-DATA="init_files/init_${START_PLUS12_SHORT}_${DAYS}d.nc"
-
-prep_jobid=$(sbatch --parsable slurm/fetch_init.sh "$START" "$DAYS")
+prep_jobid=$(sbatch --parsable slurm/fetch_init.sh "$INIT" "$DAYS")
 echo "Submitted prep job: $prep_jobid"
 
-infer_jobid=$(sbatch --parsable --dependency=afterok:"$prep_jobid" slurm/run_gencast.sh "$START" "$DAYS" "$ENSEMBLES" "$SEED")
+infer_jobid=$(sbatch --parsable --dependency=afterok:"$prep_jobid" slurm/run_gencast.sh "$INIT" "$DAYS" "$ENSEMBLES" "$SEED")
 echo "Submitted inference job: $infer_jobid"
 echo "Inference will start after prep finishes successfully."
 
-#sbatch slurm/submit_init_pred.sh 2021-06-18T00:00:00 30 8
+#sbatch slurm/submit_init_pred.sh 2021-06-26T00:00:00 10 26 0

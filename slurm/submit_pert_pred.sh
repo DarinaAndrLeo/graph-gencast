@@ -7,28 +7,29 @@ set -euo pipefail
 source ~/.bashrc
 conda activate gencast
 
-START=${1}
-DAYS=${2}
+DATA_ROOT=${DATA_ROOT:-/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/AI-IFS-attributioncomparison/pnw2021}
+
+# INIT = forecast initialisation time = the LATEST input frame (the other input frame is init - 12h)
+INIT=${1}          # e.g. 2021-06-26T00:00:00
+DAYS=${2}          # forecast days after INIT
 ENSEMBLES=${3}
 SEED=${4}
-DELTA_KIND=${5}   # pi or incr
+DELTA_KIND=${5}    # pi or incr
 
-# GenCast uses the init time + 12h
-START_SHORT="${START%:00:00}"
+INIT_SHORT="${INIT%:00:00}"
 
-INIT_PATH="init_files/init_${START_SHORT}_${DAYS}d.nc"
+# Unperturbed (current-climate) init file that the SST delta is applied to
+INIT_PATH="$DATA_ROOT/gencast/init/current/ic_1deg_current_init-${INIT_SHORT}_${DAYS}d.nc"
 
 # Output from the SST-delta step
-if [[ "$DELTA_KIND" == "incr" ]]; then
-    SST_OUT="init_files/1x1_${START_SHORT}_${DAYS}d_incrCO2_sstdelta.nc"
-elif [[ "$DELTA_KIND" == "pi" ]]; then
-    SST_OUT="init_files/1x1_${START_SHORT}_${DAYS}d_piCO2_sstdelta.nc"
+if [[ "$DELTA_KIND" == "incr" || "$DELTA_KIND" == "pi" ]]; then
+    SST_OUT="$DATA_ROOT/gencast/init/${DELTA_KIND}/ic_1deg_${DELTA_KIND}_init-${INIT_SHORT}_${DAYS}d.nc"
 else
     echo "DELTA_KIND must be 'pi' or 'incr'" >&2
     exit 1
 fi
 
-mkdir -p logs
+mkdir -p logs "$(dirname "$SST_OUT")"
 
 prep_jobid=$(sbatch --parsable \
     --export=ALL,INIT_PATH="$INIT_PATH",SST_OUT="$SST_OUT",DELTA_KIND="$DELTA_KIND" \
@@ -38,9 +39,9 @@ echo "Submitted SST-delta job: $prep_jobid"
 
 infer_jobid=$(sbatch --parsable \
     --dependency=afterok:"$prep_jobid" \
-    slurm/run_gencast.sh "$START" "$DAYS" "$ENSEMBLES" "$SEED" "$SST_OUT" "$DELTA_KIND")
+    slurm/run_gencast.sh "$INIT" "$DAYS" "$ENSEMBLES" "$SEED" "$SST_OUT" "$DELTA_KIND")
 
 echo "Submitted inference job: $infer_jobid"
 echo "Inference will start after SST-delta application finishes successfully."
 
-#sbatch slurm/submit_pert_pred.sh 2021-06-25T12:00:00 10 26 0 pi
+#sbatch slurm/submit_pert_pred.sh 2021-06-26T00:00:00 10 26 0 pi

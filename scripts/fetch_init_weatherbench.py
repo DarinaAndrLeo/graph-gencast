@@ -8,13 +8,15 @@ import xarray as xr
 from datetime import datetime, timedelta
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--start", required=True, help="Initialisation start time, e.g. 2021-06-18T00:00:00")
+parser.add_argument("--init-time", required=True, help="Forecast initialisation time = the LATEST of the two input frames, e.g. 2021-06-26T00:00:00. The earlier input frame (init - 12h) is added automatically.")
 parser.add_argument("--forecast-days", required=True, type=int, help="Number of forecast days *after* initialisation")
 parser.add_argument("--output-file", required=True, help="NetCDF output file")
 args = parser.parse_args()
-start_dt = datetime.fromisoformat(args.start)
 
 timestep = 12 #hours
+init_dt = datetime.fromisoformat(args.init_time)
+start_dt = init_dt - timedelta(hours=timestep)  # first input frame
+
 forecast_steps = round(args.forecast_days * 24 / timestep)
 total_steps = forecast_steps + 2
 end_dt = start_dt + timedelta(hours=(total_steps - 1) * timestep)
@@ -132,8 +134,8 @@ ds = xr.open_zarr(
 )
 
 OUTPUT_FILE = args.output_file
-START = args.start  # "2021-06-18T00:00:00"
-END = end_dt.isoformat()  # "2021-07-03T12:00:00"
+START = start_dt.isoformat()  # first input frame, e.g. "2021-06-25T12:00:00" (= init - 12h)
+END = end_dt.isoformat()  # last target frame, e.g. "2021-07-06T00:00:00"
 
 REQUESTED = {
     "z": "geopotential",
@@ -259,6 +261,15 @@ for static_name in ("land_sea_mask", "geopotential_at_surface"):
 # FINAL CHECK + SAVE
 # -------------------------------------------------------------
 #ds = ds.load()
+ds.attrs.update({
+    "state": "current",
+    "forecast_init_time": init_dt.isoformat(),
+    "first_input_time": start_dt.isoformat(),
+    "n_input_frames": 2,
+    "forecast_days": args.forecast_days,
+    "resolution_deg": 1.0,
+    "source": "ERA5 via WeatherBench2 (" + PATH + ")",
+})
 ds.to_netcdf(OUTPUT_FILE, format="NETCDF4")
 print(f"Saved to {OUTPUT_FILE}")
 

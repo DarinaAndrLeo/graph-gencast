@@ -134,6 +134,14 @@ def remap_grib_and_apply_to_sst(
         out_ds = init_ds.copy()
         out_ds[target_var] = init_ds[target_var] + delta_da
 
+        # the file was copied from the current-climate init file, so overwrite its state metadata
+        out_ds.attrs.update({
+            "state": "incr" if args.pi_or_incr == 1 else "pi",
+            "sst_perturbation": "+delta" if args.pi_or_incr == 1 else "-delta",
+            "sst_delta_file": grib_path.name,
+            "derived_from": init_nc_path.name,
+        })
+
         out_ds.to_netcdf(out_nc_path)
 
     return out_ds, remap_ds
