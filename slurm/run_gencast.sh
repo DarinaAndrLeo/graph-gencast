@@ -40,12 +40,12 @@ else
     DATA_PATH="init_files/init_${START_SHORT}_${DAYS}d.nc"
 fi
 
-python run_gencast.py \
-  --model "gencast_params_GenCast 1p0deg _2019.npz" \
+python scripts/run_gencast.py \
+  --model "data/params/gencast_params_GenCast 1p0deg _2019.npz" \
   --data "$DATA_PATH" \
   --output "/network/group/aopp/predict/MK004_ANDRIYCHENKO_GENCAST/predictions/1x1_${DELTA_SUFFIX}init_${START_PLUS12_SHORT}_${DAYS}d_${ENSEMBLES}ens_${SEED}seed_predictions.zarr" \
   --ensemble-size "$ENSEMBLES" \
   --seed "$SEED"
 
 #submit with:
-#sbatch run_gencast.sh 2021-06-17T12:00:00 30 8 0
+#sbatch slurm/run_gencast.sh 2021-06-17T12:00:00 30 8 0

@@ -12,7 +12,7 @@ conda activate gencast
 # Allow either:
 # 1) environment variables from sbatch --export, or
 # 2) direct command-line use:
-# ./sst_delta_apply.sh INIT_PATH SST_OUT [pi|incr]
+# ./slurm/sst_delta_apply.sh INIT_PATH SST_OUT [pi|incr]
 
 INIT_PATH="${INIT_PATH:-${1:-}}"
 SST_OUT="${SST_OUT:-${2:-}}"
@@ -30,9 +30,9 @@ echo "DELTA_KIND must be 'pi' or 'incr'" >&2
 exit 1
 fi
 
-python sst_delta_apply.py \
+python scripts/sst_delta_apply.py \
     --init-file "$INIT_PATH" \
     --pi-or-incr "$PI_OR_INCR" \
     --output-file "$SST_OUT"
 
-#./sst_delta_apply.sh init_files/init_2021-06-18T12:00:00_30d.nc init_files/init_2021-06-18T12:00:00_30d_piCO2_sstdelta.nc pi
+#./slurm/sst_delta_apply.sh init_files/init_2021-06-18T12:00:00_30d.nc init_files/init_2021-06-18T12:00:00_30d_piCO2_sstdelta.nc pi

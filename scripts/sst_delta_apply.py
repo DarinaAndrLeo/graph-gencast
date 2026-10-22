@@ -12,9 +12,9 @@ parser.add_argument("--output-file", required=True, help="NetCDF output file")
 args = parser.parse_args()
 
 if args.pi_or_incr == 1:
-    grib_path = "incr-co2-sstdelta-remap.grib"
+    grib_path = "data/IC_Deltas/incr-co2-sstdelta-remap.grib"
 elif args.pi_or_incr == -1:
-    grib_path = "pi-co2-sstdelta-remap.grib"
+    grib_path = "data/IC_Deltas/pi-co2-sstdelta-remap.grib"
 else:
     raise ValueError("pi_or_incr must be -1 or 1")
 

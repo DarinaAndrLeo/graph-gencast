@@ -14,10 +14,10 @@ DAYS=${2}
 START_SHORT=${START%:00:00}
 #start in format 2021-06-17T00:00:00
 
-python fetch_init_weatherbench.py \
+python scripts/fetch_init_weatherbench.py \
     --start "${START}" \
     --forecast-days "${DAYS}" \
     --output-file "init_files/init_${START_SHORT}_${DAYS}d.nc"
 
 #submit with:
-#sbatch fetch_init.sh 2021-06-25T00:00:00 30
+#sbatch slurm/fetch_init.sh 2021-06-25T00:00:00 30

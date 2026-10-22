@@ -32,15 +32,15 @@ mkdir -p logs
 
 prep_jobid=$(sbatch --parsable \
     --export=ALL,INIT_PATH="$INIT_PATH",SST_OUT="$SST_OUT",DELTA_KIND="$DELTA_KIND" \
-    sst_delta_apply.sh)
+    slurm/sst_delta_apply.sh)
 
 echo "Submitted SST-delta job: $prep_jobid"
 
 infer_jobid=$(sbatch --parsable \
     --dependency=afterok:"$prep_jobid" \
-    run_gencast.sh "$START" "$DAYS" "$ENSEMBLES" "$SEED" "$SST_OUT" "$DELTA_KIND")
+    slurm/run_gencast.sh "$START" "$DAYS" "$ENSEMBLES" "$SEED" "$SST_OUT" "$DELTA_KIND")
 
 echo "Submitted inference job: $infer_jobid"
 echo "Inference will start after SST-delta application finishes successfully."
 
-#sbatch submit_pert_pred.sh 2021-06-25T12:00:00 10 26 0 pi
+#sbatch slurm/submit_pert_pred.sh 2021-06-25T12:00:00 10 26 0 pi
